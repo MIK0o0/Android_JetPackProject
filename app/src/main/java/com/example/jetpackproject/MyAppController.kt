@@ -6,13 +6,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.compose.*
+import com.example.jetpackproject.ui.screens.PhotoSlider
 import com.example.jetpackproject.ui.Screen
 import com.example.jetpackproject.ui.screens.AddScreen
 import com.example.jetpackproject.ui.screens.HomeScreen
 import com.example.jetpackproject.ui.screens.ListScreen
-import com.example.jetpackproject.ui.screens.PhotosScreen
+import com.example.jetpackproject.ui.screens.PhotoScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,13 +42,17 @@ fun MyApp() {
                             HomeScreen()
                         }
                         composable(Screen.Search.route) {
-                            PhotosScreen()
+                            PhotoScreen(navController)
                         }
                         composable(Screen.Profile.route) {
                             ListScreen(navController)
                         }
                         composable("add") {
                             AddScreen(navController)
+                        }
+                        composable("slider/{clickedIndex}") { backStackEntry ->
+                            val clickedIndex = backStackEntry.arguments?.getString("clickedIndex")?.toIntOrNull() ?: 0
+                            PhotoSlider(clickedIndex)
                         }
                     }
 

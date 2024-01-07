@@ -22,7 +22,7 @@ class PhotoRepo {
         }
     }
 
-    fun getSharedList(): MutableList<Photo>? {
+    fun getSharedList(): List<Photo>? {
         uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         sharedStoreList?.clear()
 
