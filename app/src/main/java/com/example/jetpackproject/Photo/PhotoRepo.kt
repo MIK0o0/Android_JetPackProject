@@ -22,8 +22,9 @@ class PhotoRepo {
         }
     }
 
-    fun getSharedList(): List<Photo>? {
-        uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    fun getSharedList(external: Boolean): List<Photo>? {
+        if (external) uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        else uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
         sharedStoreList?.clear()
 
         val contentResolver: ContentResolver = ctx.contentResolver

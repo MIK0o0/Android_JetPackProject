@@ -1,5 +1,6 @@
 package com.example.jetpackproject.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,18 +21,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.net.toUri
+import com.example.jetpackproject.Data.getStringValue
 import com.example.jetpackproject.R
 
 @Composable
 fun HomeScreen() {
+    val context = LocalContext.current
     var invitation by remember { mutableStateOf("Fragment to start on") }
     var authorName by remember { mutableStateOf("Mikołaj") }
     var authorSurname by remember { mutableStateOf("Czyżyk") }
     var imageResourceId by remember { mutableStateOf(R.drawable.ic_launcher_foreground) }
     var setting by remember { mutableStateOf("Directory Info") }
-
+    var mainPhotoUri: String? = getStringValue(context, "main_photo")
     // Your SharedPreferences logic goes here
 
     Column(
@@ -40,13 +46,24 @@ fun HomeScreen() {
             .background(MaterialTheme.colorScheme.background)
     ) {
         Header()
-        MainFragmentContent(
-            invitation = invitation,
-            authorName = authorName,
-            authorSurname = authorSurname,
-            imageResourceId = imageResourceId,
-            setting = setting
-        )
+        if (mainPhotoUri != null) {
+            MainFragmentContent(
+                invitation = invitation,
+                authorName = authorName,
+                authorSurname = authorSurname,
+                imageResourceId = mainPhotoUri.toUri(),
+                setting = setting
+            )
+        }else{
+            MainFragmentContent(
+                invitation = invitation,
+                authorName = authorName,
+                authorSurname = authorSurname,
+                imageResourceId = imageResourceId,
+                setting = setting
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 //        LazyColumn {
 //            items(getSettingsItems()) { settingItem ->
@@ -84,6 +101,43 @@ fun MainFragmentContent(
                 .background(MaterialTheme.colorScheme.background)
 
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = setting, style = MaterialTheme.typography.bodySmall)
+    }
+}
+
+@Composable
+fun MainFragmentContent(
+    invitation: String,
+    authorName: String,
+    authorSurname: String,
+    imageResourceId: Uri,
+    setting: String
+) {
+    val context = LocalContext.current
+    val bitmap = getBitmapFromUri(context, imageResourceId)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = invitation, style = MaterialTheme.typography.titleLarge)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "$authorName $authorSurname", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colorScheme.background)
+
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = setting, style = MaterialTheme.typography.bodySmall)
     }
