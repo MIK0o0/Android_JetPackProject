@@ -79,13 +79,13 @@ fun DetailsScreen(navController: NavController, dataItemId: Int) {
                     navController.navigateUp()
 //                dataItem.photo_uri?.let { it1 -> deletePhoto(context, it1.toUri()) }
 //                    if (dataItem != null) {
-//                        dataRepo.deleteItem(dataItem)
+                        dataRepo.deleteItem(dataItem)
 //                    }
                 }) {
                     Text(text = "Delete")
                 }
                 Spacer(modifier = Modifier.size(16.dp))
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController.navigate("edit/${dataItem.id}") }) {
                     Text(text = "Edit")
                 }
             }

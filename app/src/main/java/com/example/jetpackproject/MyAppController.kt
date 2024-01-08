@@ -11,6 +11,7 @@ import com.example.jetpackproject.ui.screens.PhotoSlider
 import com.example.jetpackproject.ui.Screen
 import com.example.jetpackproject.ui.screens.AddScreen
 import com.example.jetpackproject.ui.screens.DetailsScreen
+import com.example.jetpackproject.ui.screens.EditScreen
 import com.example.jetpackproject.ui.screens.HomeScreen
 import com.example.jetpackproject.ui.screens.ListScreen
 import com.example.jetpackproject.ui.screens.PhotoScreen
@@ -58,6 +59,10 @@ fun MyApp() {
                         composable("details/{dataItemId}"){backStackEntry ->
                             val dataItemId = backStackEntry.arguments?.getString("dataItemId")?.toIntOrNull() ?: 0
                             DetailsScreen(navController, dataItemId)
+                        }
+                        composable("edit/{dataItemId}"){backStackEntry ->
+                            val dataItemId = backStackEntry.arguments?.getString("dataItemId")?.toIntOrNull() ?: 0
+                            EditScreen(navController, dataItemId)
                         }
                     }
 

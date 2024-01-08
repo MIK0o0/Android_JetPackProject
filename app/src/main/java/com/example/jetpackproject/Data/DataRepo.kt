@@ -49,7 +49,12 @@ class DataRepo() {
     }
 
     fun getItemById(itemId: Int): DataItem? {
-        return myDao.getItemById(itemId)
+        return try {
+            myDao.getItemById(itemId)
+        }catch (e: Exception) {
+            null
+        }
+
     }
 
     fun updateItem(item: DataItem) {

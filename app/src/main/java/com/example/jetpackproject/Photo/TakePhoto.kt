@@ -101,6 +101,7 @@ fun savePhoto(context: Context, viewModel: ElementViewModel) {
         saveImageToExternalStorage(context, viewModel)
     else
         saveImageToInternalStorage(context, viewModel)
+    isPhotoTaken = false
 }
 
 
