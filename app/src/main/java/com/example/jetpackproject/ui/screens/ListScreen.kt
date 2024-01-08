@@ -61,7 +61,8 @@ fun ListScreen(navController: NavController) {
     ) {
         LazyColumn {
             items(items) { item ->
-                ListItem(item, onClick = {  })
+                ListItem(item,
+                    onClick = { navController.navigate("details/${item.id}") })
             }
         }
     }
@@ -95,7 +96,7 @@ fun ListItem(item: DataItem, onClick: () -> Unit) {
 
 @Composable
 fun Thumbnail(uri: Uri) {
-    val bitmap = getBitmapFromUri(LocalContext.current, uri)
+    val bitmap = getBitmapFromUri(LocalContext.current, uri, 4)
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),

@@ -10,6 +10,7 @@ import androidx.navigation.compose.*
 import com.example.jetpackproject.ui.screens.PhotoSlider
 import com.example.jetpackproject.ui.Screen
 import com.example.jetpackproject.ui.screens.AddScreen
+import com.example.jetpackproject.ui.screens.DetailsScreen
 import com.example.jetpackproject.ui.screens.HomeScreen
 import com.example.jetpackproject.ui.screens.ListScreen
 import com.example.jetpackproject.ui.screens.PhotoScreen
@@ -53,6 +54,10 @@ fun MyApp() {
                         composable("slider/{clickedIndex}") { backStackEntry ->
                             val clickedIndex = backStackEntry.arguments?.getString("clickedIndex")?.toIntOrNull() ?: 0
                             PhotoSlider(clickedIndex)
+                        }
+                        composable("details/{dataItemId}"){backStackEntry ->
+                            val dataItemId = backStackEntry.arguments?.getString("dataItemId")?.toIntOrNull() ?: 0
+                            DetailsScreen(navController, dataItemId)
                         }
                     }
 

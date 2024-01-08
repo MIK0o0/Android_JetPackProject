@@ -96,6 +96,7 @@ fun DestinationChooser(){
 }
 
 fun savePhoto(context: Context, viewModel: ElementViewModel) {
+    if (!isPhotoTaken) return
     if (directory == "External")
         saveImageToExternalStorage(context, viewModel)
     else

@@ -33,7 +33,7 @@ fun PhotoSlider(clickedIndex: Int) {
 
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize(), count = photos.size) { page ->
         val photo = photos[page]
-        val bitmap = getBitmapFromUri(context, photo.curi)
+        val bitmap = getBitmapFromUri(context, photo.curi, 1)
         if (bitmap != null) {
             Column(
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,

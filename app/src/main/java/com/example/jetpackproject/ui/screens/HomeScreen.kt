@@ -115,7 +115,7 @@ fun MainFragmentContent(
     setting: String
 ) {
     val context = LocalContext.current
-    val bitmap = getBitmapFromUri(context, imageResourceId)
+    val bitmap = getBitmapFromUri(context, imageResourceId, 2)
     Column(
         modifier = Modifier
             .fillMaxSize()

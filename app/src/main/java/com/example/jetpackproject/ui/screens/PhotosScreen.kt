@@ -106,7 +106,7 @@ fun PhotoScreen(navController: NavController) {
 @Composable
 fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     val context = LocalContext.current
-    val bitmap = getBitmapFromUri(context, photo.curi)
+    val bitmap = getBitmapFromUri(context, photo.curi, 4)
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),
@@ -120,12 +120,12 @@ fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     }
 }
 
-fun getBitmapFromUri(context: Context, uri: Uri?): Bitmap? {
+fun getBitmapFromUri(context: Context, uri: Uri?, downSample :  Int): Bitmap? {
     var bitmap: Bitmap? = null
     try {
         val options = BitmapFactory.Options().apply {
             inJustDecodeBounds = false
-            inSampleSize = 4 // Downsample by a factor of 4
+            inSampleSize = downSample // Downsample by a factor of 4
         }
         val imageStream: InputStream? = uri?.let {
             context.contentResolver.openInputStream(it)
