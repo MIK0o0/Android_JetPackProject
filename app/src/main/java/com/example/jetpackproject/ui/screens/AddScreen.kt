@@ -1,10 +1,6 @@
 package com.example.jetpackproject.ui.screens
 
-import android.content.ActivityNotFoundException
 import android.net.Uri
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,10 +21,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,28 +31,24 @@ import androidx.navigation.NavController
 import com.example.android_project.Data.DataItem
 import com.example.android_project.Data.DataRepo
 import com.example.jetpackproject.Data.ElementViewModel
-import com.example.jetpackproject.Photo.SavePhoto
 import com.example.jetpackproject.Photo.TakePhoto
-import com.example.jetpackproject.Photo.getNewFileUri
-import com.example.jetpackproject.Photo.lastFile
-import com.example.jetpackproject.Photo.saveImageToExternalStorage
-
-private lateinit var lastFileUri: Uri
+import com.example.jetpackproject.Photo.savePhoto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(navController: NavController, viewModel: ElementViewModel = viewModel()) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(value = viewModel.name, onValueChange = { viewModel.name = it }, label = { Text("Name") })
-        TextField(value = viewModel.spec, onValueChange = { viewModel.spec = it }, label = { Text("Description") })
+        TextField(value = viewModel.name, onValueChange = { viewModel.name = it }, label = { Text("Name") }, modifier = Modifier.padding(top = 16.dp))
+        TextField(value = viewModel.spec, onValueChange = { viewModel.spec = it }, label = { Text("Description") }, modifier = Modifier.padding(top = 16.dp))
         Spacer(modifier = Modifier.size(16.dp))
         Text(text = "Strength: ${viewModel.strength.toInt()}", style = MaterialTheme.typography.titleMedium)
-        Slider(value = viewModel.strength, onValueChange = { viewModel.strength = it }, valueRange = 0f..100f, modifier = Modifier.width(200.dp))
+        Slider(value = viewModel.strength, onValueChange = { viewModel.strength = it }, valueRange = 0f..100f, modifier = Modifier.width(250.dp))
         Text(text = "Type", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
         RadioGroup(options = listOf( "Mammal", "Bird", "Fish", "Reptile", "Amphibian", "Bug"), selectedOption = viewModel.type, onOptionSelected = { viewModel.type = it })
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -68,9 +56,12 @@ fun AddScreen(navController: NavController, viewModel: ElementViewModel = viewMo
             Checkbox(checked = viewModel.isDangerous, onCheckedChange = { viewModel.isDangerous = it }, enabled = true)
         }
         Spacer(modifier = Modifier.size(16.dp))
+        TakePhoto(viewModel)
+        Spacer(modifier = Modifier.size(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(onClick = {
-                val item = DataItem(viewModel.name, viewModel.spec, viewModel.strength.toInt(), viewModel.type, viewModel.isDangerous, "")
+                savePhoto(context, viewModel)
+                val item = DataItem(viewModel.name, viewModel.spec, viewModel.strength.toInt(), viewModel.type, viewModel.isDangerous, viewModel.photoUri.toString())
                 DataRepo.getInstance().addItem(item)
                 navController.popBackStack()
             },
@@ -83,8 +74,7 @@ fun AddScreen(navController: NavController, viewModel: ElementViewModel = viewMo
                 Text("Cancel")
             }
         }
-        TakePhoto()
-        SavePhoto()
+//        SavePhoto()
     }
 }
 
@@ -96,17 +86,17 @@ fun RadioGroup(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
-    Column {
+    Column{
         options.forEach { option ->
             Row(
                 modifier = Modifier
-                    .width(275.dp)
+                    .fillMaxWidth()
                     .padding(vertical = 4.dp)
                     .selectable(
                         selected = (option == selectedOption),
                         onClick = { onOptionSelected(option) }
                     )
-                    .background(if (option == selectedOption) Color.Gray else Color.Transparent)
+                    .background(Color.Transparent)
                     .padding(16.dp)
             ) {
                 RadioButton(

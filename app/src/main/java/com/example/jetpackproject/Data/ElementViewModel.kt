@@ -13,5 +13,6 @@ class ElementViewModel : ViewModel() {
     var strength: Float by mutableStateOf(0f)
     var type: String by mutableStateOf("Bird")
     var isDangerous: Boolean by mutableStateOf(false)
+    var photoUri: Uri? by mutableStateOf(null)
     var photoFile: File? by mutableStateOf(null)
 }
