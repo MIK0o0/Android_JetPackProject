@@ -11,10 +11,10 @@ import com.example.android_project.Data.DataItem
 import java.io.File
 
 class ElementViewModel : ViewModel() {
-    var name by mutableStateOf("")
+    var name by mutableStateOf("Default Name")
     var spec by mutableStateOf("")
     var strength by mutableStateOf(0f)
-    var type by mutableStateOf("")
+    var type by mutableStateOf("Mammal")
     var isDangerous by mutableStateOf(false)
     var photoUri by mutableStateOf<Uri>(Uri.EMPTY)
 

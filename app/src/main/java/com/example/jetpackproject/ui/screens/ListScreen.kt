@@ -2,14 +2,13 @@ package com.example.jetpackproject.ui.screens
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,12 +30,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.android_project.Data.DataItem
+import com.example.android_project.Data.DataRepo
 import com.example.jetpackproject.Data.ListViewModel
 import com.example.jetpackproject.R
 
@@ -69,12 +66,41 @@ fun ListScreen(navController: NavController) {
 }
 
 @Composable
+fun ConfirmDeleteDialog(
+    showDialog: Boolean,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(text = "Confirm Delete") },
+            text = { Text("Are you sure you want to delete this item?") },
+            confirmButton = {
+                TextButton(onClick = onConfirm) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text("No")
+                }
+            }
+        )
+    }
+}
+
+@SuppressLint("RememberReturnType")
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
 fun ListItem(item: DataItem, onClick: () -> Unit) {
+    val dataRepo = DataRepo.getInstance()
     val color = if (item.dangerous) Color.Red else Color.Green
+    val showDialog = remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
-            .clickable(onClick = onClick)
+            .combinedClickable(onClick = onClick, onLongClick = { showDialog.value = true })
             .fillMaxWidth()
             .background(color)
             .border(1.dp, Color.Black),
@@ -90,6 +116,17 @@ fun ListItem(item: DataItem, onClick: () -> Unit) {
             text = item.item_type.uppercase(),
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier.padding(end = 16.dp)
+        )
+    }
+
+    if (showDialog.value) {
+        ConfirmDeleteDialog(
+            showDialog = true,
+            onConfirm = {
+                dataRepo.deleteItem(item)
+                showDialog.value = false
+            },
+            onDismiss = { showDialog.value = false }
         )
     }
 }

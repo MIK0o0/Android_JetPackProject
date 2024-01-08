@@ -27,69 +27,68 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.android_project.Data.DataItem
 import com.example.android_project.Data.DataRepo
+import com.example.jetpackproject.Data.ElementViewModel
 import java.io.File
 
 @Composable
-fun DetailsScreen(navController: NavController, dataItemId: Int) {
+fun DetailsScreen(navController: NavController, dataItemId: Int, myViewModel: ElementViewModel = viewModel()) {
     val dataRepo = DataRepo.getInstance()
-    val dataItem: DataItem? = dataRepo.getItemById(dataItemId)
+    val dataItem: DataItem = dataRepo.getItemById(dataItemId)!!
+    myViewModel.setValues(dataItem)
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (dataItem == null) {
-            Toast.makeText(LocalContext.current, "Item not found", Toast.LENGTH_LONG).show()
-            navController.popBackStack()
-            return@Column
-        }else{
-            Text(text = "Name: ${dataItem.text_name}", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Description: ${dataItem.text_spec}", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Strength: ${dataItem.item_strength}", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Type: ${dataItem.item_type}", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Dangerous: ${if (dataItem.dangerous) "Yes" else "No"}", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.size(16.dp))
-            Text(text = "Photo: ", style = MaterialTheme.typography.titleMedium)
-            val context = LocalContext.current
-            val bitmap = getBitmapFromUri(context,dataItem.photo_uri.toUri() , 2)
-            if (bitmap != null) {
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(MaterialTheme.colorScheme.background)
+        Text(text = "Name: ${myViewModel.name}", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "Description: ${myViewModel.spec}", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "Strength: ${myViewModel.strength}", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "Type: ${myViewModel.type}", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "Dangerous: ${if (myViewModel.isDangerous) "Yes" else "No"}", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "Photo: ", style = MaterialTheme.typography.titleMedium)
+        val context = LocalContext.current
+        val bitmap = getBitmapFromUri(context,myViewModel.photoUri , 2)
+        if (bitmap != null) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colorScheme.background)
 
-                )
+            )
+        }
+        Spacer(modifier = Modifier.size(16.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(modifier = Modifier.size(16.dp))
+            Button(onClick = {
+                navController.navigateUp()
+                Thread.sleep(2000)
+//                dataRepo.deleteItem(dataItem)
+//                    }
+                //                dataItem.photo_uri?.let { it1 -> deletePhoto(context, it1.toUri()) }
+//                    if (dataItem != null) {
+            }) {
+                Text(text = "Delete")
             }
             Spacer(modifier = Modifier.size(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Spacer(modifier = Modifier.size(16.dp))
-                Button(onClick = {
-                    navController.navigateUp()
-//                dataItem.photo_uri?.let { it1 -> deletePhoto(context, it1.toUri()) }
-//                    if (dataItem != null) {
-                        dataRepo.deleteItem(dataItem)
-//                    }
-                }) {
-                    Text(text = "Delete")
-                }
-                Spacer(modifier = Modifier.size(16.dp))
-                Button(onClick = { navController.navigate("edit/${dataItem.id}") }) {
-                    Text(text = "Edit")
-                }
+            Button(onClick = { navController.navigate("edit/${dataItem.id}") }) {
+                Text(text = "Edit")
             }
         }
+
 
     }
 }
