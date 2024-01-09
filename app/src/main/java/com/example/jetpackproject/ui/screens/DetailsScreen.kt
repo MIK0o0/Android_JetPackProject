@@ -71,54 +71,10 @@ fun DetailsScreen(navController: NavController, dataItemId: Int, myViewModel: El
             )
         }
         Spacer(modifier = Modifier.size(16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Spacer(modifier = Modifier.size(16.dp))
-            Button(onClick = {
-                navController.navigateUp()
-                Thread.sleep(2000)
-//                dataRepo.deleteItem(dataItem)
-//                    }
-                //                dataItem.photo_uri?.let { it1 -> deletePhoto(context, it1.toUri()) }
-//                    if (dataItem != null) {
-            }) {
-                Text(text = "Delete")
-            }
-            Spacer(modifier = Modifier.size(16.dp))
-            Button(onClick = { navController.navigate("edit/${dataItem.id}") }) {
-                Text(text = "Edit")
-            }
+        Button(onClick = { navController.navigate("edit/${dataItem.id}") }) {
+            Text(text = "Edit")
         }
 
 
     }
-}
-fun deletePhoto(context: Context, uri: Uri): Boolean {
-    val filePath = getFilePathFromUri(context, uri)
-
-    if (filePath != null) {
-        val file = File(filePath)
-        if (file.exists()) {
-            return file.delete()
-        }
-    }
-
-    return false
-}
-
-private fun getFilePathFromUri(context: Context, uri: Uri): String? {
-    if (ContentResolver.SCHEME_FILE == uri.scheme) {
-        return uri.path
-    }
-
-    if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                return it.getString(columnIndex)
-            }
-        }
-    }
-
-    return null
 }

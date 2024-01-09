@@ -42,17 +42,18 @@ var isPhotoTaken by mutableStateOf(false)
 
 @Composable
 fun TakePhoto(viewModel: ElementViewModel) {
+    if (viewModel.photoUri != Uri.EMPTY && viewModel.photoUri != null) {
+        isPhotoTaken = true
+    }
     val context = LocalContext.current
     val photoLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) { result ->
         if (result) {
             Toast.makeText(context, "Photo TAKEN", Toast.LENGTH_LONG).show()
             isPhotoTaken = true
             viewModel.photoUri = temporaryFileUri
-//            saveImageToExternalStorage(context)
         } else {
             Toast.makeText(context, "Photo NOT taken!", Toast.LENGTH_LONG).show()
             isPhotoTaken = false
-//            lastFile.delete()
         }
     }
     Row(verticalAlignment = Alignment.CenterVertically) {

@@ -39,12 +39,57 @@ import com.example.android_project.Data.DataRepo
 import com.example.jetpackproject.Data.ListViewModel
 import com.example.jetpackproject.R
 
+
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "RememberReturnType")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(navController: NavController) {
     val listViewModel = remember { ListViewModel() }
     val items by listViewModel.items.collectAsState()
+
+    @SuppressLint("RememberReturnType")
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun ListItem(item: DataItem, onClick: () -> Unit) {
+        val dataRepo = DataRepo.getInstance()
+        val color = if (item.dangerous) Color.Red else Color.Green
+        val showDialog = remember { mutableStateOf(false) }
+
+        Row(
+            modifier = Modifier
+                .combinedClickable(onClick = onClick, onLongClick = { showDialog.value = true })
+                .fillMaxWidth()
+                .background(color)
+                .border(1.dp, Color.Black),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Thumbnail(uri = item.photo_uri.toUri())
+            Text(
+                text = item.text_name,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = item.item_type.uppercase(),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+        }
+
+        if (showDialog.value) {
+            ConfirmDeleteDialog(
+                showDialog = true,
+                onConfirm = {
+
+                    listViewModel.deleteItem(item)
+                    showDialog.value = false
+                },
+                onDismiss = { showDialog.value = false }
+            )
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -90,46 +135,7 @@ fun ConfirmDeleteDialog(
     }
 }
 
-@SuppressLint("RememberReturnType")
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ListItem(item: DataItem, onClick: () -> Unit) {
-    val dataRepo = DataRepo.getInstance()
-    val color = if (item.dangerous) Color.Red else Color.Green
-    val showDialog = remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .combinedClickable(onClick = onClick, onLongClick = { showDialog.value = true })
-            .fillMaxWidth()
-            .background(color)
-            .border(1.dp, Color.Black),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Thumbnail(uri = item.photo_uri.toUri())
-        Text(
-            text = item.text_name,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = item.item_type.uppercase(),
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.padding(end = 16.dp)
-        )
-    }
-
-    if (showDialog.value) {
-        ConfirmDeleteDialog(
-            showDialog = true,
-            onConfirm = {
-                dataRepo.deleteItem(item)
-                showDialog.value = false
-            },
-            onDismiss = { showDialog.value = false }
-        )
-    }
-}
 
 @Composable
 fun Thumbnail(uri: Uri) {

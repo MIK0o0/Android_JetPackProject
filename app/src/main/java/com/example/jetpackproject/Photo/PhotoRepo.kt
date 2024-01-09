@@ -3,13 +3,15 @@ package com.example.jetpackproject.Photo
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
+import androidx.core.net.toFile
 import com.example.jetpackproject.BuildConfig
 import java.io.File
+
 
 class PhotoRepo {
     lateinit var uri: Uri

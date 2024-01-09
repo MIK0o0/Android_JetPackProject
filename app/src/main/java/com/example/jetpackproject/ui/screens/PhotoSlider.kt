@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +44,7 @@ fun PhotoSlider(clickedIndex: Int) {
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(400.dp)
                         .padding(16.dp),
                     contentScale = ContentScale.Crop
                 )

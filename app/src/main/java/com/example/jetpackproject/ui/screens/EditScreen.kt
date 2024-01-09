@@ -56,17 +56,9 @@ fun EditScreen(navController: NavController, dataItemId: Int, viewModel: Element
     var strength = remember { mutableStateOf(dataItem.item_strength.toFloat()) }
     var type = remember { mutableStateOf(dataItem.item_type) }
     var isDangerous = remember { mutableStateOf(dataItem.dangerous) }
-//    var photoUri = remember { mutableStateOf(dataItem.photo_uri.toUri()) }
 
 
-    // Initialize the ViewModel with the dataItem's properties
-//    viewModel.name = dataItem.text_name
-//    viewModel.spec = dataItem.text_spec
-//    viewModel.strength = dataItem.item_strength.toFloat()
-//    viewModel.type = dataItem.item_type
-//    viewModel.isDangerous = dataItem.dangerous
     viewModel.photoUri = dataItem.photo_uri.toUri()
-//    viewModel.name = "Alalalalalalal"
 
     Column(
         modifier = Modifier

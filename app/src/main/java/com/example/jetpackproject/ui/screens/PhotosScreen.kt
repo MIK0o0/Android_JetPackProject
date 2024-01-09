@@ -1,12 +1,16 @@
 package com.example.jetpackproject.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.MediaStore
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,6 +43,7 @@ import com.example.jetpackproject.Data.getBooleanValue
 import com.example.jetpackproject.Data.saveBooleanValue
 import com.example.jetpackproject.Photo.Photo
 import com.example.jetpackproject.Photo.PhotoRepo
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -103,6 +108,7 @@ fun PhotoScreen(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     val context = LocalContext.current
@@ -114,7 +120,9 @@ fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
             modifier = Modifier
                 .size(150.dp)
                 .padding(4.dp)
-                .clickable(onClick = { onClick(index) }),
+                .combinedClickable(
+                    onClick = { onClick(index) }
+                ),
             contentScale = ContentScale.Crop,
         )
     }
@@ -136,3 +144,5 @@ fun getBitmapFromUri(context: Context, uri: Uri?, downSample :  Int): Bitmap? {
     }
     return bitmap
 }
+
+
