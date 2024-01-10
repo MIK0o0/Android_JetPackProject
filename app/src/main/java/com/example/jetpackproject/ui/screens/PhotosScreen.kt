@@ -46,6 +46,8 @@ import com.example.jetpackproject.Photo.PhotoRepo
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
+import android.graphics.Matrix
+import android.media.ExifInterface
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,7 +114,7 @@ fun PhotoScreen(navController: NavController) {
 @Composable
 fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     val context = LocalContext.current
-    val bitmap = getBitmapFromUri(context, photo.curi, 4)
+    val bitmap = getBitmapFromUri(context, photo.curi, 8)
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),
@@ -128,17 +130,37 @@ fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     }
 }
 
+
+
 fun getBitmapFromUri(context: Context, uri: Uri?, downSample :  Int): Bitmap? {
     var bitmap: Bitmap? = null
     try {
         val options = BitmapFactory.Options().apply {
             inJustDecodeBounds = false
-            inSampleSize = downSample // Downsample by a factor of 4
+            inSampleSize = downSample
         }
         val imageStream: InputStream? = uri?.let {
             context.contentResolver.openInputStream(it)
         }
         bitmap = BitmapFactory.decodeStream(imageStream, null, options)
+
+        // Get the orientation of the image from the EXIF data
+        val exif = uri?.let {
+            context.contentResolver.openInputStream(it)?.let { inputStream ->
+                ExifInterface(inputStream)
+            }
+        }
+        val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+        // Rotate the bitmap according to the orientation
+        val matrix = Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+        }
+        bitmap = bitmap?.let { Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true) }
+
     } catch (e: FileNotFoundException) {
         e.printStackTrace()
     }

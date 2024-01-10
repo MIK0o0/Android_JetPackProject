@@ -41,8 +41,8 @@ var directory by mutableStateOf("External")
 var isPhotoTaken by mutableStateOf(false)
 
 @Composable
-fun TakePhoto(viewModel: ElementViewModel) {
-    if (viewModel.photoUri != Uri.EMPTY && viewModel.photoUri != null) {
+fun TakePhoto(viewModel: ElementViewModel, isEdit: Boolean = false) {
+    if (viewModel.photoUri != Uri.EMPTY && isEdit) {
         isPhotoTaken = true
     }
     val context = LocalContext.current
@@ -169,7 +169,7 @@ fun saveImageToExternalStorage(context: Context, viewModel: ElementViewModel) {
             fos?.close()
         }
         val activity = context as Activity
-        MediaStore.Images.Media.insertImage(activity.contentResolver, newFile.path, newFile.name, newFile.name)
+//        MediaStore.Images.Media.insertImage(activity.contentResolver, newFile.path, newFile.name, newFile.name)
 
         temporaryFile.delete()
     } else{

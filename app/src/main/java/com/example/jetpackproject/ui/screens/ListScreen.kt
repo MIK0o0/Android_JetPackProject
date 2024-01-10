@@ -52,8 +52,9 @@ fun ListScreen(navController: NavController) {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun ListItem(item: DataItem, onClick: () -> Unit) {
-        val dataRepo = DataRepo.getInstance()
-        val color = if (item.dangerous) Color.Red else Color.Green
+        val darkGreen = Color.Green.copy(alpha = 0.3f)
+        val darRed = Color.Red.copy(alpha = 0.5f)
+        val color = if (item.dangerous) darRed else darkGreen
         val showDialog = remember { mutableStateOf(false) }
 
         Row(
@@ -96,7 +97,7 @@ fun ListScreen(navController: NavController) {
                 icon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) },
                 text = { Text("Add") },
                 onClick = { navController.navigate("add") },
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .padding(16.dp)
             )
         },
@@ -139,7 +140,7 @@ fun ConfirmDeleteDialog(
 
 @Composable
 fun Thumbnail(uri: Uri) {
-    val bitmap = getBitmapFromUri(LocalContext.current, uri, 4)
+    val bitmap = getBitmapFromUri(LocalContext.current, uri, 16)
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),

@@ -78,7 +78,7 @@ fun EditScreen(navController: NavController, dataItemId: Int, viewModel: Element
             Checkbox(checked = isDangerous.value, onCheckedChange = { isDangerous.value = it }, enabled = true)
         }
         Spacer(modifier = Modifier.size(16.dp))
-        TakePhoto(viewModel)
+        TakePhoto(viewModel, true)
         Spacer(modifier = Modifier.size(16.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(onClick = {

@@ -57,7 +57,7 @@ fun DetailsScreen(navController: NavController, dataItemId: Int, myViewModel: El
         Spacer(modifier = Modifier.size(16.dp))
         Text(text = "Photo: ", style = MaterialTheme.typography.titleMedium)
         val context = LocalContext.current
-        val bitmap = getBitmapFromUri(context,myViewModel.photoUri , 2)
+        val bitmap = getBitmapFromUri(context,myViewModel.photoUri , 4)
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),

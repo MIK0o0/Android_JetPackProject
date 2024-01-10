@@ -28,7 +28,6 @@ fun HomeScreen() {
     var invitation by remember { mutableStateOf("Fragment to start on") }
     var authorName by remember { mutableStateOf("Mikołaj") }
     var authorSurname by remember { mutableStateOf("Czyżyk") }
-    var setting by remember { mutableStateOf("Directory Info") }
     var mainPhotoUri: String? = getStringValue(context, "main_photo")
 
     Column(
@@ -44,7 +43,6 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         MainImage(imageUri = mainPhotoUri?.toUri() ?: Uri.EMPTY)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = setting, style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -65,7 +63,7 @@ fun MainImage(imageResourceId: Int){
 @Composable
 fun MainImage(imageUri: Uri){
     val context = LocalContext.current
-    val bitmap = getBitmapFromUri(context, imageUri, 2)
+    val bitmap = getBitmapFromUri(context, imageUri, 4)
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),
