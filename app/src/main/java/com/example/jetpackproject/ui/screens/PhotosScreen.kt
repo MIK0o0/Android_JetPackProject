@@ -115,6 +115,7 @@ fun PhotoScreen(navController: NavController) {
 fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
     val context = LocalContext.current
     val bitmap = getBitmapFromUri(context, photo.curi, 8)
+    val showDialog = remember { mutableStateOf(false) }
     if (bitmap != null) {
         Image(
             bitmap = bitmap.asImageBitmap(),
@@ -123,14 +124,25 @@ fun PhotoItem(photo: Photo, index: Int, onClick: (Int) -> Unit = {}) {
                 .size(150.dp)
                 .padding(4.dp)
                 .combinedClickable(
-                    onClick = { onClick(index) }
+                    onClick = { onClick(index) },
+                    onLongClick = {
+                        showDialog.value = true
+                    }
                 ),
             contentScale = ContentScale.Crop,
         )
+        if (showDialog.value) {
+            ConfirmDeleteDialog(
+                showDialog = true,
+                onConfirm = {
+                    photo.curi?.let { deletePhoto(context, it) }
+                    showDialog.value = false
+                },
+                onDismiss = { showDialog.value = false }
+            )
+        }
     }
 }
-
-
 
 fun getBitmapFromUri(context: Context, uri: Uri?, downSample :  Int): Bitmap? {
     var bitmap: Bitmap? = null
@@ -165,6 +177,17 @@ fun getBitmapFromUri(context: Context, uri: Uri?, downSample :  Int): Bitmap? {
         e.printStackTrace()
     }
     return bitmap
+}
+
+fun deletePhoto(context: Context, photoUri: Uri): Boolean {
+    return try {
+        File(photoUri.path!!).delete()
+        val deletedRows = context.contentResolver.delete(photoUri, null, null)
+        deletedRows > 0
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
+    }
 }
 
 
