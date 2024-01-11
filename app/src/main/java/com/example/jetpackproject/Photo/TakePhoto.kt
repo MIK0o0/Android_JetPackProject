@@ -109,7 +109,7 @@ fun savePhoto(context: Context, viewModel: ElementViewModel) {
 fun getNewFileUri(context: Context): Uri {
     val activity = context as Activity
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val storageDir: File? = activity.getExternalFilesDir(Environment.DIRECTORY_DCIM)
+    val storageDir: File? = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
     val innerStorageDir: File? = activity.filesDir
 //        val storageDir: File? = requireActivity().filesDir
     val imageFile = File.createTempFile(
@@ -179,7 +179,7 @@ fun saveImageToExternalStorage(context: Context, viewModel: ElementViewModel) {
 }
 
 fun saveImageToInternalStorage(context: Context, viewModel: ElementViewModel) {
-    val internalStorageDir = context.filesDir
+    val internalStorageDir = context.getExternalFilesDir(Environment.DIRECTORY_DCIM)
     val newFile = File(internalStorageDir, temporaryFile.name)
     viewModel.photoUri = Uri.fromFile(newFile)
 
